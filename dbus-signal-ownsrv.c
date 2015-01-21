@@ -79,11 +79,12 @@ static const GDBusInterfaceVTable interface_vtable =
 static gboolean
 timeout_cb (gpointer user_data)
 {
+  printf("emitting_signal\n");
   GDBusConnection *connection = G_DBUS_CONNECTION (user_data);
 
-  printf("emitting_signal\n");
+
   guint port = 4000, serve = 123, type = 2;
-  GError *error;
+  GError *error = NULL;
   g_dbus_connection_emit_signal (connection,
                                  NULL,
                                  GSTSWITCH_OBJECT_PATH,
@@ -94,9 +95,9 @@ timeout_cb (gpointer user_data)
                                  &error);
 
   g_assert_no_error (error);
+
   return TRUE;
 }
-
 
 
 void bus_acquired_cb (GDBusConnection *connection,
@@ -124,7 +125,6 @@ void bus_acquired_cb (GDBusConnection *connection,
 }
 
 
-
 void bus_name_acquired_cb (GDBusConnection *connection,
                                  const gchar *name,
                                  gpointer user_data)
@@ -140,17 +140,16 @@ void bus_name_lost_cb (GDBusConnection *connection,
 }
 
 
-
 int main(int argc, char * argv[])
 {
     guint owner_id;
     GMainLoop *loop;
     GError *error = NULL;
 
+    printf("dbus_internal_server_setup\n");
+    dbus_internal_server_setup();
     introspection_data = g_dbus_node_info_new_for_xml (introspection_xml, NULL);
     g_assert (introspection_data != NULL);
-
-    dbus_internal_server_setup();
 
     printf("g_dbus_connection_new_for_address_sync\n");
     GDBusConnection * con = g_dbus_connection_new_for_address_sync("tcp:host=127.0.0.1,port=6000",
@@ -161,7 +160,6 @@ int main(int argc, char * argv[])
 
     g_assert_no_error (error);
     bus_acquired_cb(con, GSTSWITCH_BUS_NAME, NULL);
-
 
 
     printf("g_bus_own_name_on_connection\n");
@@ -178,12 +176,13 @@ int main(int argc, char * argv[])
     loop = g_main_loop_new (NULL, FALSE);
     g_main_loop_run (loop);
 
+
     g_bus_unown_name (owner_id);
 
+    printf("dbus_internal_server_teardown\n");
     dbus_internal_server_teardown();
 
     g_dbus_node_info_unref (introspection_data);
-
 
     return 0;
 }

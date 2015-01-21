@@ -1,25 +1,26 @@
 #include <stdio.h>
 #include <gio/gio.h>
-#include "dbus-signal-ownsrv.c"
+#include "dbus-internal-server.h"
 
 static void
 gst_switch_controller_on_connection_closed (GDBusConnection * connection,
     gboolean vanished, GError * error, gpointer user_data)
 {
-  g_object_unref (connection);
+    printf("gst_switch_controller_on_connection_closed\n");
+    g_object_unref (connection);
 }
 
 static gboolean
 gst_switch_controller_on_new_connection (GDBusServer * server,
     GDBusConnection * connection, gpointer user_data)
 {
-  printf("new-connection...\n");
+    printf("gst_switch_controller_on_new_connection\n");
 
-  g_signal_connect (connection, "closed",
-      G_CALLBACK (gst_switch_controller_on_connection_closed), NULL);
+    g_signal_connect (connection, "closed",
+        G_CALLBACK (gst_switch_controller_on_connection_closed), NULL);
 
-  g_object_ref (connection);
-  return TRUE;
+    g_object_ref (connection);
+    return TRUE;
 }
 
 
@@ -47,12 +48,13 @@ void dbus_internal_server_setup()
 
     g_assert_no_error (error);
     g_assert (bus_server != NULL);
+    g_object_ref(bus_server);
 
     printf("Controller is listening at: %s\n",
-      g_dbus_server_get_client_address (bus_server));
+        g_dbus_server_get_client_address (bus_server));
 
     g_signal_connect (bus_server, "new-connection",
-      G_CALLBACK (gst_switch_controller_on_new_connection), NULL);
+        G_CALLBACK (gst_switch_controller_on_new_connection), NULL);
 
     g_dbus_server_start (bus_server);
     //g_object_unref (auth_observer);
