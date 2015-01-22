@@ -8,7 +8,7 @@ def cb_signal(connection, sender_name, object_path, interface_name, signal_name,
 print("Gio.new_for_address_sync");
 connection = Gio.DBusConnection.new_for_address_sync(
 	"tcp:host=127.0.0.1,port=6000",
-	Gio.DBusConnectionFlags.NONE,
+	Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT,
 	None,
 	None)
 
