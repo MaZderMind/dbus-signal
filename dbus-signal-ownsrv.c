@@ -98,17 +98,18 @@ connection_cb (GDBusConnection *connection)
 {
     printf("connection_cb\n");
 
+    GError *error = NULL;
     guint registration_id;
 
-    printf("objpath: %s\n", GSTSWITCH_OBJECT_PATH);
     registration_id = g_dbus_connection_register_object (connection,
                                                          GSTSWITCH_OBJECT_PATH,
                                                          introspection_data->interfaces[0],
                                                          &interface_vtable,
                                                          NULL,  /* user_data */
                                                          NULL,  /* user_data_free_func */
-                                                         NULL); /* GError** */
+                                                         &error); /* GError** */
 
+    g_assert_no_error (error);
     g_assert (registration_id > 0);
 }
 
@@ -132,7 +133,6 @@ int main(int argc, char * argv[])
 {
     guint owner_id;
     GMainLoop *loop;
-    GError *error = NULL;
 
     printf("dbus_internal_server_setup\n");
     dbus_internal_server_setup(connection_cb);
