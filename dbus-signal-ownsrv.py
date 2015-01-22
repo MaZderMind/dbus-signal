@@ -12,33 +12,32 @@ connection = Gio.DBusConnection.new_for_address_sync(
 	None,
 	None)
 
-print(connection)
-# 
-# print("connection.signal_subscribe");
-# connection.signal_subscribe(
-# 	None,
-# 	"us.timvideos.GstSwitch.ControllerInterface",
-# 	None,
-# 	None,
-# 	None,
-# 	0,
-# 	cb_signal,
-# 	None)
-# 
-# print("connection.call_sync(get_compose_port)");
-# port = connection.call_sync(
-# 	"us.timvideos.gst-switch.controller",
-# 	"/us/timvideos/GstSwitch/Controller",
-# 	"us.timvideos.GstSwitch.ControllerInterface",
-# 	"get_compose_port",
-# 	None,
-# 	GLib.VariantType.new("(i)"),
-# 	Gio.DBusCallFlags.NONE,
-# 	-1,
-# 	None).unpack()[0];
-# 
-# print("get_compose_port returned %u" % port)
-# 
-# print("Gtk.main")
-# signal.signal(signal.SIGINT, signal.SIG_DFL)
-# Gtk.main()
+
+print("connection.signal_subscribe");
+connection.signal_subscribe(
+	None,
+	"us.timvideos.GstSwitch.ControllerInterface",
+	None,
+	None,
+	None,
+	0,
+	cb_signal,
+	None)
+
+print("connection.call_sync(get_compose_port)");
+port = connection.call_sync(
+	"us.timvideos.gst-switch.controller",
+	"/us/timvideos/GstSwitch/Controller",
+	"us.timvideos.GstSwitch.ControllerInterface",
+	"get_compose_port",
+	None,
+	GLib.VariantType.new("(i)"),
+	Gio.DBusCallFlags.NONE,
+	-1,
+	None).unpack()[0];
+
+print("get_compose_port returned %u" % port)
+
+print("Gtk.main")
+signal.signal(signal.SIGINT, signal.SIG_DFL)
+Gtk.main()
