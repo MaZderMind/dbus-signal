@@ -134,6 +134,9 @@ int main(int argc, char * argv[])
     guint owner_id;
     GMainLoop *loop;
 
+    introspection_data = g_dbus_node_info_new_for_xml (introspection_xml, NULL);
+    g_assert (introspection_data != NULL);
+
     printf("dbus_internal_server_setup\n");
     dbus_internal_server_setup(connection_cb);
 
