@@ -12,6 +12,7 @@ connection = Gio.DBusConnection.new_for_address_sync(
 	None,
 	None)
 
+connection.connect("closed", Gtk.main_quit)
 
 print("connection.signal_subscribe");
 connection.signal_subscribe(
